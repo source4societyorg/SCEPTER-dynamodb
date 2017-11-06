@@ -1,9 +1,7 @@
 
-const DynamoDB = function (awsConfigPath = '../../config/credentials.json', env = 'dev') {
+const DynamoDB = function () {
   this.client = null
   this.AWS = require('aws-sdk')
-  this.setConfiguration(awsConfigPath, env)
-  this.instantiateClient()
 }
 
 DynamoDB.prototype.setConfiguration = function (configPath, env) {
@@ -13,9 +11,10 @@ DynamoDB.prototype.setConfiguration = function (configPath, env) {
   }
   this.configuration = configFile[env].configuration
   this.AWS.config.update(this.configuration)
+  this.instantiateClient()
 }
 
-DynamoDB.prototype.instantiateDB = function () {
+DynamoDB.prototype.instantiateClient = function () {
   this.client = new this.AWS.DynamoDB.DocumentClient({apiVersion: '2012-10-08'})
 }
 
