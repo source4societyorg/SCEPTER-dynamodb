@@ -17,22 +17,21 @@ DynamoDB.prototype.instantiateClient = function () {
   this.client = new this.AWS.DynamoDB.DocumentClient({apiVersion: '2012-10-08'})
 }
 
-DynamoDB.prototype.query = function (tableName = null, expressionAttributes, keyConditions, filterExpressions, callback) {
-  const params = {
-    ExpressionAttributeValues: expressionAttributes,
-    KeyConditionExpression: keyConditions,
-    FilterExpression: filterExpressions,
-    TableName: tableName
+DynamoDB.prototype.query = function (tableName = null, key, callback, options = {}) {
+  const basic = {
+    Key: key,
+    TableName: tableName,
   }
+  
+  const params = Object.assign(basic, options); 
 
   this.client.query(params, callback)
 }
 
-DynamoDB.prototype.getItem = function (tableName, key, projectionExpression, callback, options = {}) {
+DynamoDB.prototype.getItem = function (tableName, key, callback, options = {}) {
   const basic = {
     TableName: tableName,
-    Key: key,
-    ProjectionExpression: projectionExpression
+    Key: key
   }
   const params = Object.assign(basic, options);
 

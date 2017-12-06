@@ -1,6 +1,6 @@
 {
   "name": "@source4society/scepter-dynamodb-lib",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "DynamoDB implementation for SCEPTER framework",
   "main": "index.js",
   "repository": "git@github.com:source4societyorg/SCEPTER-dynamodb-lib.git",
