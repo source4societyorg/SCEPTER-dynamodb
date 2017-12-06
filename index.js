@@ -5,10 +5,10 @@ const DynamoDB = function () {
 }
 
 DynamoDB.prototype.setConfiguration = function (configFile, env) {
-  if (configFile[env].provider !== 'aws') {
+  if (configFile.environments[env].provider !== 'aws') {
     throw new Error('The configuration provider must be of type aws')
   }
-  this.configuration = configFile[env].configuration
+  this.configuration = configFile.environments[env].configuration
   this.AWS.config.update(this.configuration)
   this.instantiateClient()
 }
@@ -28,23 +28,24 @@ DynamoDB.prototype.query = function (tableName = null, expressionAttributes, key
   this.client.query(params, callback)
 }
 
-DynamoDB.prototype.getItem = function (tableName, key, projectionExpression, callback) {
-  const params = {
+DynamoDB.prototype.getItem = function (tableName, key, projectionExpression, callback, options = {}) {
+  const basic = {
     TableName: tableName,
     Key: key,
     ProjectionExpression: projectionExpression
   }
+  const params = Object.assign(basic, options);
 
-  this.client.getItem(params, callback)
+  this.client.get(params, callback)
 }
 
-DynamoDB.prototype.putItem = function (tableName, item, callback) {
-  const params = {
+DynamoDB.prototype.putItem = function (tableName, item, callback, options = {}) {
+  const basic = {
     TableName: tableName,
     Item: item
   }
-
-  this.client.putItem(params, callback)
+  const params = Object.assign(basic, options);
+  this.client.put(params, callback)
 }
 
 DynamoDB.prototype.deleteItem = function (tableName, key, callback) {
@@ -53,7 +54,7 @@ DynamoDB.prototype.deleteItem = function (tableName, key, callback) {
     Key: key
   }
 
-  this.client.deleteItem(params, callback)
+  this.client.delete(params, callback)
 }
 
 module.exports = DynamoDB
