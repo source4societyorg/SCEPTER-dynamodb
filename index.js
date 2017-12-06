@@ -4,8 +4,7 @@ const DynamoDB = function () {
   this.AWS = require('aws-sdk')
 }
 
-DynamoDB.prototype.setConfiguration = function (configPath, env) {
-  const configFile = require(configPath)
+DynamoDB.prototype.setConfiguration = function (configFile, env) {
   if (configFile[env].provider !== 'aws') {
     throw new Error('The configuration provider must be of type aws')
   }
