@@ -17,11 +17,9 @@ DynamoDB.prototype.instantiateClient = function () {
   this.client = new this.AWS.DynamoDB.DocumentClient({apiVersion: '2012-10-08'})
 }
 
-DynamoDB.prototype.query = function (tableName = null, expressionAttributes, keyConditions, filterExpressions, callback, options = {}) {
+DynamoDB.prototype.query = function (tableName = null, keyConditions, callback, options = {}) {
   const basic = {
-    ExpressionAttributeValues: expressionAttributes,
     KeyConditionExpression: keyConditions,
-    FilterExpression: filterExpressions,
     TableName: tableName
   }
   const params = Object.assign(basic, options)
