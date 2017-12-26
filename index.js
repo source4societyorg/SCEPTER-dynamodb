@@ -17,23 +17,25 @@ DynamoDB.prototype.instantiateClient = function () {
   this.client = new this.AWS.DynamoDB.DocumentClient({apiVersion: '2012-10-08'})
 }
 
-DynamoDB.prototype.query = function (tableName = null, key, callback, options = {}) {
+DynamoDB.prototype.query = function (tableName = null, expressionAttributes, keyConditions, filterExpressions, callback, options = {}) {
   const basic = {
-    Key: key,
-    TableName: tableName,
+    ExpressionAttributeValues: expressionAttributes,
+    KeyConditionExpression: keyConditions,
+    FilterExpression: filterExpressions,
+    TableName: tableName
   }
-  
-  const params = Object.assign(basic, options); 
+  const params = Object.assign(basic, options)
 
   this.client.query(params, callback)
 }
 
-DynamoDB.prototype.getItem = function (tableName, key, callback, options = {}) {
+DynamoDB.prototype.getItem = function (tableName, key, projectionExpression, callback, options = {}) {
   const basic = {
     TableName: tableName,
-    Key: key
+    Key: key,
+    ProjectionExpression: projectionExpression
   }
-  const params = Object.assign(basic, options);
+  const params = Object.assign(basic, options)
 
   this.client.get(params, callback)
 }
@@ -43,7 +45,7 @@ DynamoDB.prototype.putItem = function (tableName, item, callback, options = {}) 
     TableName: tableName,
     Item: item
   }
-  const params = Object.assign(basic, options);
+  const params = Object.assign(basic, options)
   this.client.put(params, callback)
 }
 
