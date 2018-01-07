@@ -36,8 +36,9 @@ DynamoDB.prototype.query = function (tableName = null, keyConditions, callback, 
       if (preserveLimit && completeData.Count < limit && typeof data.LastEvaluatedKey !== 'undefined') {
         params.ExclusiveStartKey = data.LastEvaluatedKey
         this.client.query(params, queryCallback)
+      } else {
+        callback(null, completeData)
       }
-      callback(null, completeData)
     } else {
       callback(err)
     }
