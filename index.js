@@ -17,14 +17,33 @@ DynamoDB.prototype.instantiateClient = function () {
   this.client = new this.AWS.DynamoDB.DocumentClient({apiVersion: '2012-10-08'})
 }
 
-DynamoDB.prototype.query = function (tableName = null, keyConditions, callback, options = {}) {
+DynamoDB.prototype.query = function (tableName = null, keyConditions, callback, options = {}, preserveLimit = true) {
   const basic = {
     KeyConditionExpression: keyConditions,
     TableName: tableName
   }
   const params = Object.assign(basic, options)
 
-  this.client.query(params, callback)
+  let limit = options.Limit || undefined
+  let completeData = { Items: [], Count: 0, ScannedCount: 0 }
+  preserveLimit = preserveLimit && typeof limit !== 'undefined'
+
+  const queryCallback = (err, data) => {
+    if (typeof err === 'undefined' || err === null) {
+      completeData.ScannedCount += data.ScannedCount
+      completeData.Count += data.Items.length
+      completeData.Items = completeData.Items.concat(data.Items)
+      if (preserveLimit && completeData.Count < limit && typeof data.LastEvaluatedKey !== 'undefined') {
+        params.ExclusiveStartKey = data.LastEvaluatedKey
+        this.client.query(params, queryCallback)
+      }
+      callback(null, completeData)
+    } else {
+      callback(err)
+    }
+  }
+
+  this.client.query(params, queryCallback)
 }
 
 DynamoDB.prototype.batchGet = function (tableName, requestItems, projectionExpression, callback, options = {}) {
