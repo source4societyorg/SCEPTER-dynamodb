@@ -35,7 +35,7 @@ DynamoDB.prototype.batchGet = function (tableName, requestItems, projectionExpre
   }
   const params = Object.assign(basic, options)
 
-  this.client.get(params, callback)
+  this.client.batchGet(params, callback)
 }
 
 DynamoDB.prototype.getItem = function (tableName, key, projectionExpression, callback, options = {}) {
