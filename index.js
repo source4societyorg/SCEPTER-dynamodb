@@ -1,3 +1,4 @@
+const immutable = require('immutable')
 
 const DynamoDB = function () {
   this.client = null
@@ -5,10 +6,7 @@ const DynamoDB = function () {
 }
 
 DynamoDB.prototype.setConfiguration = function (configFile, env) {
-  if (configFile.environments[env].provider !== 'aws') {
-    throw new Error('The configuration provider must be of type aws')
-  }
-  this.configuration = configFile.environments[env].configuration
+  this.configuration = configFile.getIn(['environments', env, 'provider', 'aws'])
   this.AWS.config.update(this.configuration)
   this.instantiateClient()
 }
