@@ -1,5 +1,5 @@
 const immutable = require('immutable')
-
+const utilities = require('@source4society/scepter-utility-lib')
 const DynamoDB = function () {
   this.client = null
   this.AWS = require('aws-sdk')
@@ -27,10 +27,10 @@ DynamoDB.prototype.query = function (tableName = null, keyConditions, callback, 
   preserveLimit = preserveLimit && typeof limit !== 'undefined'
 
   const queryCallback = (err, data) => {
-    if (typeof err === 'undefined' || err === null) {
+    if (utilities.isEmpty(err)) {
       completeData.ScannedCount += data.ScannedCount
-      completeData.Count += data.Items.length
-      completeData.Items = completeData.Items.concat(data.Items)
+      completeData.Count += utilities.isEmpty(data.Items) ? data.Count : data.Items.length
+      completeData.Items = utilities.isEmpty(data.Items) ? completeData.Items : completeData.Items.concat(data.Items)
       completeData.LastEvaluatedKey = data.LastEvaluatedKey
       if (preserveLimit && completeData.Count < limit && typeof data.LastEvaluatedKey !== 'undefined') {
         params.ExclusiveStartKey = data.LastEvaluatedKey
