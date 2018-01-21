@@ -73,8 +73,18 @@ DynamoDB.prototype.putItem = function (tableName, item, callback, options = {}) 
     TableName: tableName,
     Item: item
   }
-  const params = Object.assign(basic, options)
+  const params = Object.assign(basic, options)  
   this.client.put(params, callback)
+}
+
+DynamoDB.prototype.updateItem = function (tableName, keyExpression, updateExpression, callback, options = {}) {
+  const basic = {
+    TableName: tableName,
+    Key: keyExpression,
+    UpdateExpression: updateExpression    
+  }
+  const params = Object.assign(basic, options)
+  this.client.update(params, callback)
 }
 
 DynamoDB.prototype.deleteItem = function (tableName, key, callback) {
